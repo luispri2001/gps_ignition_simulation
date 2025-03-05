@@ -5,7 +5,7 @@
 ## Tested Systems and ROS 2 Distro
 | System        | ROS 2 Distro | Build Status |
 |---------------|--------------|--------------|
-| Ubuntu 22.04  | Humble       | ![Build Status](https://github.com/luispri2001/gps_ignition_simulation/actions/workflows/main.yml/badge.svg?branch=simulation) |
+| Ubuntu 22.04  | Humble       | ![Build Status](https://github.com/luispri2001/gps_ignition_simulation/actions/workflows/main.yml/badge.svg?branch=main) |
 
 This repository is a based on the original [navigation2_tutorials](https://github.com/ros-planning/navigation2_tutorials) repository. It has been extensively modified to support migration to **Ignition Fortress**. In addition to migrating the TurtleBot simulation, new robots such as the **Leo Rover** have been added, along with new maps—primarily of the University of Leon campus.
 
