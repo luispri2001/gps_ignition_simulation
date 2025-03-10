@@ -1,0 +1,7 @@
+image: route_map.pgm
+resolution: 0.7
+origin: [-100, -270, 0.0]  # Mover el mapa 10 metros hacia la derecha y 10 metros hacia abajo
+occupied_thresh: 0.5
+free_thresh: 0.2
+negate: 0
+

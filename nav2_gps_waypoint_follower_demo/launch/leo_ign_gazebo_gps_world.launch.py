@@ -23,11 +23,11 @@ def generate_launch_description():
     # Archivo SDF del robot para Ignition Gazebo
     robot_description_file = os.path.join(pkg_leorover_gazebo, 'robots', 'leorover.sdf')
     
-    # Comando para establecer la variable de entorno de modelos de Ignition
-    models_dir = os.path.join(gps_wpf_dir, "models")
-    models_dir += os.pathsep + f"/opt/ros/{os.getenv('ROS_DISTRO')}/share/turtlebot3_gazebo/models"
-    ignition_model_path = os.environ.get('IGNITION_MODEL_PATH', '') + os.pathsep + models_dir
-    set_ignition_model_path_cmd = SetEnvironmentVariable("IGNITION_MODEL_PATH", ignition_model_path)
+    # # Comando para establecer la variable de entorno de modelos de Ignition
+    # models_dir = os.path.join(gps_wpf_dir, "models")
+    # models_dir += os.pathsep + f"/opt/ros/{os.getenv('ROS_DISTRO')}/share/turtlebot3_gazebo/models"
+    # ignition_model_path = os.environ.get('IGNITION_MODEL_PATH', '') + os.pathsep + models_dir
+    # set_ignition_model_path_cmd = SetEnvironmentVariable("IGNITION_MODEL_PATH", ignition_model_path)
     
     # Iniciar Ignition Gazebo con el mundo especificado
     start_ignition_server_cmd = ExecuteProcess(
@@ -53,12 +53,12 @@ def generate_launch_description():
     
     # Publicadores de TF estáticos
     static_tf_nodes = [
-        Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            name='base_footprint_publisher',
-            arguments=['0', '0', '0', '0', '0', '0', '1', '/leorover/base_footprint', 'base_footprint']
-        ),
+        # Node(
+        #     package='tf2_ros',
+        #     executable='static_transform_publisher',
+        #     name='base_footprint_publisher',
+        #     arguments=['0', '0', '0', '0', '0', '0', '1', '/leorover/base_footprint', 'base_footprint']
+        # ),
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
@@ -77,12 +77,17 @@ def generate_launch_description():
             name='realsense_camera_publisher',
             arguments=['0', '0', '0', '-0.5', '0.5', '-0.5', '0.5', 'realsense_camera_link', 'leorover/realsense_camera_optical_frame/realsense_d455']
         ),
-
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
-            name='gps_publisher',
-            arguments=['0', '0', '0', '-0.5', '0.5', '-0.5', '0.5', 'gps_link', 'gps/fix']
+            name='gps_to_base_link_publisher',
+            arguments=['0.0', '0.0', '1.0', '0.0', '0.0', '0.0', '1.0', 'base_link', 'gps_link']
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='map_to_odom_publisher',
+            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', '1.0', 'map', 'odom']
         )
     ]
     
@@ -101,17 +106,19 @@ def generate_launch_description():
         executable='create',
         arguments=[
             '-name', 'leorover',
-            '-x', '-1000',
-            '-z', '227',
-            '-y', '-800',
-            '-file', robot_description_file
+            '-x', '-169',
+            '-z', '27.5',
+            '-y', '-126',
+            '-file', robot_description_file,
+            '-Y', '3.14159'  # Rotación de 180 grados en el eje Yaw (Z)
         ],
         output='screen'
     )
+
     
     # Crear el LaunchDescription e incluir las acciones
     ld = LaunchDescription()
-    ld.add_action(set_ignition_model_path_cmd)
+    # ld.add_action(set_ignition_model_path_cmd)
     ld.add_action(start_ignition_server_cmd)
     ld.add_action(bridge)
     ld.add_action(robot_state_publisher)

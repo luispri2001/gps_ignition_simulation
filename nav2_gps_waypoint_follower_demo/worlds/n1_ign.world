@@ -30,10 +30,10 @@
     </include>
 
     <!-- Incluir y spawnear el robot -->
-    <include>
+    <!-- <include>
       <uri>model://turtlebot_waffle_gps/model_ign.sdf</uri>
       <pose>-137 -21 5.5 0 0 1.57</pose>
-    </include>
+    </include> -->
 
     <!-- Coordenadas GPS del mundo -->
     <spherical_coordinates>

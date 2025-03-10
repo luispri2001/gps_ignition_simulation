@@ -1,0 +1,4 @@
+map_server:
+  ros__parameters:
+    yaml_filename: "/home/robotica/gpsSim_ws/src/navigation2_tutorials_gps_humble/nav2_gps_waypoint_follower_demo/config/route_map.yaml"  # Path to your actual map YAML file
+

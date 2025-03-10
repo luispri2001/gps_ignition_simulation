@@ -7,7 +7,7 @@
           <geometry>
             <mesh>
               <uri>model://campusReducido/meshes/campusReducido.dae</uri>
-              <scale>8 8 8</scale>
+              <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </visual>
@@ -15,7 +15,7 @@
           <geometry>
             <mesh>
               <uri>model://campusReducido/meshes/campusReducido.dae</uri>
-              <scale>8 8 8</scale>
+              <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>

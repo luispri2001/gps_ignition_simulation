@@ -42,7 +42,19 @@ def generate_launch_description():
             os.path.join(launch_dir, 'local_robot_state_publisher.launch.py')),
         launch_arguments={'use_sim_time': 'true'}.items()  # Habilitar uso del tiempo simulado
     )
-
+    robot_description_file = os.path.join(gps_wpf_dir, 'models/turtlebot_waffle_gps', 'model_ign.sdf')
+    spawn = Node(
+        package='ros_gz_sim',
+        executable='create',
+        arguments=[
+            '-name', 'turtlebot3',
+            '-x', '-137',
+            '-z', '5.5',
+            '-y', '-21',
+            '-file', robot_description_file
+        ],
+        output='screen'
+    )
 
     # Crear el nodo joint_state_publisher con el formato adecuado
     joint_state_publisher_node = Node(
@@ -59,5 +71,6 @@ def generate_launch_description():
     ld.add_action(start_ignition_server_cmd)  # Asegúrate de que se ejecute inmediatamente
     ld.add_action(bridge_py_cmd)
     ld.add_action(robot_state_publisher)
+    ld.add_action(spawn)
     ld.add_action(joint_state_publisher_node)  # Agregar el nodo de joint_state_publisher
     return ld

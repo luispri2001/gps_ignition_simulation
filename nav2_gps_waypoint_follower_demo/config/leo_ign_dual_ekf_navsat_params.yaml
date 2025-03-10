@@ -55,7 +55,7 @@ ekf_filter_node_odom:
         false,
         false,
       ]
-    imu0_differential: false # If using a real robot you might want to set this to true, since usually absolute measurements from real imu's are not very accurate
+    imu0_differential: true # If using a real robot you might want to set this to true, since usually absolute measurements from real imu's are not very accurate
     imu0_relative: false
     imu0_queue_size: 10
     imu0_remove_gravitational_acceleration: true
@@ -369,7 +369,7 @@ ekf_filter_node_map:
         false,
         false,
       ]
-    imu0_differential: false # If using a real robot you might want to set this to true, since usually absolute measurements from real imu's are not very accurate
+    imu0_differential: true # If using a real robot you might want to set this to true, since usually absolute measurements from real imu's are not very accurate
     imu0_relative: false
     imu0_queue_size: 10
     imu0_remove_gravitational_acceleration: true
@@ -610,7 +610,7 @@ navsat_transform:
     frequency: 30.0
     delay: 3.0
     magnetic_declination_radians: 0.0
-    yaw_offset: 0.0
+    yaw_offset: 0.0 # 180 grados en radianes (π)
     zero_altitude: true
     broadcast_utm_transform: true
     publish_filtered_gps: true
