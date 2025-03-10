@@ -1,0 +1,3 @@
+[submodule "leorover_gazebo_sim"]
+	path = leorover_gazebo_sim
+	url = https://github.com/luispri2001/leorover_gazebo_sim.git
