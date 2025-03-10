@@ -21,7 +21,7 @@ To clone this repository and compile it within a ROS 2 Humble workspace:
 ```sh
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
-git clone https://github.com/luispri2001/gps_ignition_simulation.git
+git clone --recurse-submodules https://github.com/luispri2001/gps_ignition_simulation.git
 cd ~/ros2_ws
 colcon build --symlink-install
 ```
