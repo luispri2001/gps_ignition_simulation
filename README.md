@@ -7,7 +7,7 @@
 |---------------|--------------|-------------------|--------------|
 | Ubuntu 22.04  | Humble       | ✅                | ![Build Status](https://github.com/luispri2001/gps_ignition_simulation/actions/workflows/main.yml/badge.svg?branch=main) |
 
-This repository is a based on the original [navigation2_tutorials](https://github.com/ros-planning/navigation2_tutorials) repository. It has been extensively modified to support migration to **Ignition Fortress**. In addition to migrating the TurtleBot simulation, new robots such as the **Leo Rover** have been added, along with new maps—primarily of the University of Leon campus.
+This repository is based on the original [navigation2_tutorials](https://github.com/ros-planning/navigation2_tutorials) repository. It has been extensively modified to support migration to **Ignition Fortress**. In addition to migrating the TurtleBot simulation, new robots such as the **Leo Rover** have been added, along with new maps—primarily of the University of Leon campus.
 
 ## Changes and Improvements
 - Adaptation of code for compatibility with ROS 2 Humble and migration to Ignition Fortress.
@@ -40,6 +40,22 @@ docker run -p 8080:8080 -d -t -v ~/mapproxy:/mapproxy danielsnider/mapproxy
 - This container fetches **Google Maps tiles** and serves them locally.  
 - Mapviz can then access these tiles from `http://localhost:8080`.  
 - The `-v ~/mapproxy:/mapproxy` option ensures that cached tiles are stored persistently in `~/mapproxy`.  
+
+## Launching the Simulation with Leo Rover
+
+To launch the simulation with the **Leo Rover** and visualize it in **RViz** and **Mapviz**, use the following command:
+
+```sh
+ros2 launch nav2_gps_waypoint_follower_demo leo_ign_gps_waypoint_follower.launch.py use_rviz:=true use_mapviz:=true
+```
+
+## Moving to Clicked Points on the Map
+
+To move the Robots to points that are clicked on the map, launch the following node:
+
+```sh
+ros2 run nav2_gps_waypoint_follower_demo interactive_waypoint_follower
+```
 
 ## Funding
 
