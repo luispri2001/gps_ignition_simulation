@@ -26,7 +26,20 @@ cd ~/ros2_ws
 colcon build --symlink-install
 ```
 
----
+## **Map Visualization with Mapviz**
+For visualizing maps in **Mapviz**, we use a **Docker container** based on [danielsnider/docker-mapproxy-googlemaps](https://github.com/danielsnider/docker-mapproxy-googlemaps).  
+
+### **Setup and Launch**
+To start the **Mapproxy** Docker container, run:  
+
+```sh
+docker run -p 8080:8080 -d -t -v ~/mapproxy:/mapproxy danielsnider/mapproxy
+```
+
+### **How It Works**
+- This container fetches **Google Maps tiles** and serves them locally.  
+- Mapviz can then access these tiles from `http://localhost:8080`.  
+- The `-v ~/mapproxy:/mapproxy` option ensures that cached tiles are stored persistently in `~/mapproxy`.  
 
 ## Funding
 
