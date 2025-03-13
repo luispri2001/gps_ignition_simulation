@@ -16,12 +16,21 @@ def generate_launch_description():
     models_dir = os.path.join(gps_wpf_dir, "models")
     models_dir += os.pathsep + f"/opt/ros/{os.getenv('ROS_DISTRO')}/share/turtlebot3_gazebo/models"
     
-    # Establecer la variable de entorno para Ignition
+    # Configurar IGNITION_MODEL_PATH
     if 'IGNITION_MODEL_PATH' in os.environ:
         ignition_model_path = os.environ['IGNITION_MODEL_PATH'] + os.pathsep + models_dir
     else:
         ignition_model_path = models_dir
+
     set_ignition_model_path_cmd = SetEnvironmentVariable("IGNITION_MODEL_PATH", ignition_model_path)
+
+    # Configurar IGN_GAZEBO_RESOURCE_PATH para que Ignition encuentre los modelos y recursos
+    if 'IGN_GAZEBO_RESOURCE_PATH' in os.environ:
+        ign_gazebo_resource_path = os.environ['IGN_GAZEBO_RESOURCE_PATH'] + os.pathsep + gps_wpf_dir
+    else:
+        ign_gazebo_resource_path = gps_wpf_dir
+
+    set_ign_gazebo_resource_path_cmd = SetEnvironmentVariable("IGN_GAZEBO_RESOURCE_PATH", ign_gazebo_resource_path)
     
     # Iniciar Ignition Gazebo con el mundo especificado
     start_ignition_server_cmd = ExecuteProcess(
@@ -30,19 +39,24 @@ def generate_launch_description():
         shell=True
     )
     
-    # Comando para incluir la descripción del puente (puede ser necesario dependiendo del sistema)
+    # Incluir la descripción del puente ROS-Gazebo (si es necesario)
     bridge_py_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(launch_dir, 'bridge.launch.py')),
         launch_arguments={'use_sim_time': 'true'}.items()  # Habilitar uso del tiempo simulado
     )
-    # Comando para incluir la descripción del robot_state_publisher (puede ser necesario dependiendo del sistema)
+
+    # Incluir la descripción del robot_state_publisher
     robot_state_publisher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(launch_dir, 'local_robot_state_publisher.launch.py')),
-        launch_arguments={'use_sim_time': 'true'}.items()  # Habilitar uso del tiempo simulado
+        launch_arguments={'use_sim_time': 'true'}.items()
     )
+
+    # Ruta del archivo de descripción del robot
     robot_description_file = os.path.join(gps_wpf_dir, 'models/turtlebot_waffle_gps', 'model_ign.sdf')
+
+    # Comando para generar el robot en el mundo
     spawn = Node(
         package='ros_gz_sim',
         executable='create',
@@ -56,21 +70,23 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Crear el nodo joint_state_publisher con el formato adecuado
+    # Nodo para la publicación del estado de las articulaciones
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        parameters=[{'use_sim_time': True}]  # Usa el tiempo simulado de ROS
+        parameters=[{'use_sim_time': True}]
     )
 
-    # Crear el LaunchDescription e incluir las acciones
+    # Crear la descripción del lanzamiento
     ld = LaunchDescription()
     ld.add_action(set_ignition_model_path_cmd)
-    ld.add_action(start_ignition_server_cmd)  # Asegúrate de que se ejecute inmediatamente
+    ld.add_action(set_ign_gazebo_resource_path_cmd)
+    ld.add_action(start_ignition_server_cmd)
     ld.add_action(bridge_py_cmd)
     ld.add_action(robot_state_publisher)
     ld.add_action(spawn)
-    ld.add_action(joint_state_publisher_node)  # Agregar el nodo de joint_state_publisher
+    ld.add_action(joint_state_publisher_node)
+
     return ld

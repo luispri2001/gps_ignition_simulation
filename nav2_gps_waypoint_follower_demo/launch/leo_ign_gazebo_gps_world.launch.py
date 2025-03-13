@@ -22,12 +22,25 @@ def generate_launch_description():
     
     # Archivo SDF del robot para Ignition Gazebo
     robot_description_file = os.path.join(pkg_leorover_gazebo, 'robots', 'leorover.sdf')
+
+    # Configurar IGNITION_MODEL_PATH
+    models_dir = os.path.join(gps_wpf_dir, "models")
+    models_dir += os.pathsep + f"/opt/ros/{os.getenv('ROS_DISTRO')}/share/turtlebot3_gazebo/models"
     
-    # # Comando para establecer la variable de entorno de modelos de Ignition
-    # models_dir = os.path.join(gps_wpf_dir, "models")
-    # models_dir += os.pathsep + f"/opt/ros/{os.getenv('ROS_DISTRO')}/share/turtlebot3_gazebo/models"
-    # ignition_model_path = os.environ.get('IGNITION_MODEL_PATH', '') + os.pathsep + models_dir
-    # set_ignition_model_path_cmd = SetEnvironmentVariable("IGNITION_MODEL_PATH", ignition_model_path)
+    if 'IGNITION_MODEL_PATH' in os.environ:
+        ignition_model_path = os.environ['IGNITION_MODEL_PATH'] + os.pathsep + models_dir
+    else:
+        ignition_model_path = models_dir
+
+    set_ignition_model_path_cmd = SetEnvironmentVariable("IGNITION_MODEL_PATH", ignition_model_path)
+
+    # Configurar IGN_GAZEBO_RESOURCE_PATH
+    if 'IGN_GAZEBO_RESOURCE_PATH' in os.environ:
+        ign_gazebo_resource_path = os.environ['IGN_GAZEBO_RESOURCE_PATH'] + os.pathsep + gps_wpf_dir
+    else:
+        ign_gazebo_resource_path = gps_wpf_dir
+
+    set_ign_gazebo_resource_path_cmd = SetEnvironmentVariable("IGN_GAZEBO_RESOURCE_PATH", ign_gazebo_resource_path)
     
     # Iniciar Ignition Gazebo con el mundo especificado
     start_ignition_server_cmd = ExecuteProcess(
@@ -53,12 +66,6 @@ def generate_launch_description():
     
     # Publicadores de TF estáticos
     static_tf_nodes = [
-        # Node(
-        #     package='tf2_ros',
-        #     executable='static_transform_publisher',
-        #     name='base_footprint_publisher',
-        #     arguments=['0', '0', '0', '0', '0', '0', '1', '/leorover/base_footprint', 'base_footprint']
-        # ),
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
@@ -115,10 +122,10 @@ def generate_launch_description():
         output='screen'
     )
 
-    
     # Crear el LaunchDescription e incluir las acciones
     ld = LaunchDescription()
-    # ld.add_action(set_ignition_model_path_cmd)
+    ld.add_action(set_ignition_model_path_cmd)
+    ld.add_action(set_ign_gazebo_resource_path_cmd)
     ld.add_action(start_ignition_server_cmd)
     ld.add_action(bridge)
     ld.add_action(robot_state_publisher)
