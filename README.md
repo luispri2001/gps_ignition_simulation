@@ -23,7 +23,10 @@ mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone --recurse-submodules https://github.com/luispri2001/gps_ignition_simulation.git
 cd ~/ros2_ws
+rosdep update
+rosdep install --from-paths src --ignore-src -y
 colcon build --symlink-install
+source install/setup.bash
 ```
 
 ## **Map Visualization with Mapviz**
