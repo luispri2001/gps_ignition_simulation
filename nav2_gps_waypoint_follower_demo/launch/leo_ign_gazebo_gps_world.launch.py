@@ -29,6 +29,11 @@ def generate_launch_description():
     models_dir = os.path.join(gps_wpf_dir, "models")
     models_dir += os.pathsep + f"/opt/ros/{os.getenv('ROS_DISTRO')}/share/turtlebot3_gazebo/models"
     
+    set_gz_sim_resource_path_cmd = SetEnvironmentVariable(
+        "GZ_SIM_RESOURCE_PATH",
+        f"{os.environ.get('GZ_SIM_RESOURCE_PATH', '')}:{models_dir}"
+    )
+    
     # Añadir los directorios de los modelos a la variable de entorno
     if 'IGNITION_MODEL_PATH' in os.environ:
         ignition_model_path = os.environ['IGNITION_MODEL_PATH'] + os.pathsep + models_dir
@@ -176,6 +181,7 @@ def generate_launch_description():
 
     # Crear el LaunchDescription e incluir las acciones
     ld = LaunchDescription()
+    ld.add_action(set_gz_sim_resource_path_cmd)
     ld.add_action(set_ignition_model_path_cmd)
     ld.add_action(set_ign_gazebo_resource_path_cmd)
     ld.add_action(start_ignition_server_cmd)
