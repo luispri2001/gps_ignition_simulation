@@ -130,13 +130,36 @@ def generate_launch_description():
     # Crear nodos para las ovejas
     sheep_nodes = []
     sheep_model_path = os.path.join(gps_wpf_dir, "models", "sheep", "model.sdf")
-    radius = 3  # Radio en metros alrededor del robot
-    num_sheep = 10  # Número de ovejas
+    # Parámetros de configuración
+    num_sheep = 10
+    radius = 5.0  # Radio inicial para la distribución de las ovejas
+    min_distance = 2.0  # Distancia mínima entre ovejas
 
+    # Lista para almacenar las posiciones de las ovejas
+    sheep_positions = []
+
+    # Lista para los nodos de las ovejas
     for i in range(num_sheep):
-        angle = random.uniform(0, 2 * math.pi)  # Ángulo aleatorio usando math.pi
-        x_pos = radius * math.cos(angle) + (-169)  # Posición X
-        y_pos = radius * math.sin(angle) + (-126)  # Posición Y
+        # Búsqueda de una posición válida para la oveja
+        while True:
+            angle = random.uniform(0, 2 * math.pi)  # Ángulo aleatorio
+            x_pos = radius * math.cos(angle) + (-169)  # Posición X
+            y_pos = radius * math.sin(angle) + (-126)  # Posición Y
+
+            # Verificar si la oveja está suficientemente lejos de las demás
+            too_close = False
+            for pos in sheep_positions:
+                dist = math.sqrt((x_pos - pos[0])**2 + (y_pos - pos[1])**2)
+                if dist < min_distance:
+                    too_close = True
+                    break
+            
+            # Si no está demasiado cerca de otras ovejas, agrega la posición
+            if not too_close:
+                sheep_positions.append((x_pos, y_pos))
+                break
+        
+        # Crear el nodo para la oveja
         sheep_spawn = Node(
             package='ros_gz_sim',
             executable='create',
@@ -144,7 +167,7 @@ def generate_launch_description():
                 '-name', f'sheep_{i}',
                 '-x', str(x_pos),
                 '-y', str(y_pos),
-                '-z', '0.0',  # Altura de la oveja
+                '-z', '27.5',  # Altura de la oveja
                 '-file', sheep_model_path
             ],
             output='screen'

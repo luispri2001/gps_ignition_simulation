@@ -53,11 +53,6 @@
       <uri>model://campusReducido</uri>
     </include>
 
-    <include>
-      <uri>model://sheep/model.sdf</uri>
-      <pose>-170 -127 27.5 0 0 0</pose>
-    </include>
-
     <!-- Coordenadas GPS del mundo -->
     <spherical_coordinates>
       <!-- Coordenadas GPS del mundo -->
