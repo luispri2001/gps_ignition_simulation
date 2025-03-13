@@ -13,7 +13,7 @@ def get_model_files(model_path):
     return files_without_meshes, meshes_files
 
 # Lista de modelos
-models = ['n1', 'campusReducido', 'map', 'turtlebot_waffle_gps']
+models = ['n1', 'campusReducido', 'map', 'turtlebot_waffle_gps', 'sheep']
 
 # Generamos la lista de data_files automáticamente
 data_files = [

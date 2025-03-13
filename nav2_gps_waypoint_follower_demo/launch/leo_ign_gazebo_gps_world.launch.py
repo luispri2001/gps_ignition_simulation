@@ -1,4 +1,6 @@
 import os
+import random
+import math  # Importar math para funciones trigonométricas
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess, SetEnvironmentVariable, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -27,11 +29,13 @@ def generate_launch_description():
     models_dir = os.path.join(gps_wpf_dir, "models")
     models_dir += os.pathsep + f"/opt/ros/{os.getenv('ROS_DISTRO')}/share/turtlebot3_gazebo/models"
     
+    # Añadir los directorios de los modelos a la variable de entorno
     if 'IGNITION_MODEL_PATH' in os.environ:
         ignition_model_path = os.environ['IGNITION_MODEL_PATH'] + os.pathsep + models_dir
     else:
         ignition_model_path = models_dir
 
+    # Configurar la variable de entorno para los modelos de Ignition
     set_ignition_model_path_cmd = SetEnvironmentVariable("IGNITION_MODEL_PATH", ignition_model_path)
 
     # Configurar IGN_GAZEBO_RESOURCE_PATH
@@ -40,6 +44,7 @@ def generate_launch_description():
     else:
         ign_gazebo_resource_path = gps_wpf_dir
 
+    # Configurar la variable de entorno para los recursos de Gazebo
     set_ign_gazebo_resource_path_cmd = SetEnvironmentVariable("IGN_GAZEBO_RESOURCE_PATH", ign_gazebo_resource_path)
     
     # Iniciar Ignition Gazebo con el mundo especificado
@@ -122,6 +127,30 @@ def generate_launch_description():
         output='screen'
     )
 
+    # Crear nodos para las ovejas
+    sheep_nodes = []
+    sheep_model_path = os.path.join(gps_wpf_dir, "models", "sheep", "model.sdf")
+    radius = 3  # Radio en metros alrededor del robot
+    num_sheep = 10  # Número de ovejas
+
+    for i in range(num_sheep):
+        angle = random.uniform(0, 2 * math.pi)  # Ángulo aleatorio usando math.pi
+        x_pos = radius * math.cos(angle) + (-169)  # Posición X
+        y_pos = radius * math.sin(angle) + (-126)  # Posición Y
+        sheep_spawn = Node(
+            package='ros_gz_sim',
+            executable='create',
+            arguments=[
+                '-name', f'sheep_{i}',
+                '-x', str(x_pos),
+                '-y', str(y_pos),
+                '-z', '0.0',  # Altura de la oveja
+                '-file', sheep_model_path
+            ],
+            output='screen'
+        )
+        sheep_nodes.append(sheep_spawn)
+
     # Crear el LaunchDescription e incluir las acciones
     ld = LaunchDescription()
     ld.add_action(set_ignition_model_path_cmd)
@@ -134,5 +163,9 @@ def generate_launch_description():
     
     for node in static_tf_nodes:
         ld.add_action(node)
+
+    # Añadir los nodos para las ovejas
+    for sheep in sheep_nodes:
+        ld.add_action(sheep)
     
     return ld

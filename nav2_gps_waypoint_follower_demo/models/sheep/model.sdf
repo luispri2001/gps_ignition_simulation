@@ -1,0 +1,23 @@
+<sdf version="1.9">
+    <model name="sheep">
+      <static>true</static>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://sheep/meshes/sheep.dae</uri>
+              <scale>7 7 7</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://sheep/meshes/sheep.dae</uri>
+              <scale>7 7 7</scale>
+            </mesh>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+</sdf>
