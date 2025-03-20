@@ -13,6 +13,12 @@
   <depend>mapviz</depend>
   <depend>mapviz_plugins</depend>
   <depend>tile_map</depend>
+  
+  <!-- Dependencias adicionales necesarias -->
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+  <depend>ament_index_python</depend>
+  <depend>ros_gz_sim</depend>
 
   <export>
     <build_type>ament_python</build_type>

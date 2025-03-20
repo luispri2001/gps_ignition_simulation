@@ -1,12 +1,13 @@
-import os
-import random
-import math  # Importar math para funciones trigonométricas
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, SetEnvironmentVariable, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import ExecuteProcess, SetEnvironmentVariable, IncludeLaunchDescription, DeclareLaunchArgument
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
+import os
 import xacro
+from src.spawn_sheep import generate_sheep_nodes 
 
 def generate_launch_description():
     # Obtener los directorios de los paquetes
@@ -132,52 +133,9 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Crear nodos para las ovejas
-    sheep_nodes = []
-    sheep_model_path = os.path.join(gps_wpf_dir, "models", "sheep", "model.sdf")
-    # Parámetros de configuración
-    num_sheep = 10
-    radius = 5.0  # Radio inicial para la distribución de las ovejas
-    min_distance = 2.0  # Distancia mínima entre ovejas
+    # Crear los nodos para las ovejas solo si 'generate_sheep' es true
 
-    # Lista para almacenar las posiciones de las ovejas
-    sheep_positions = []
-
-    # Lista para los nodos de las ovejas
-    for i in range(num_sheep):
-        # Búsqueda de una posición válida para la oveja
-        while True:
-            angle = random.uniform(0, 2 * math.pi)  # Ángulo aleatorio
-            x_pos = radius * math.cos(angle) + (-169)  # Posición X
-            y_pos = radius * math.sin(angle) + (-126)  # Posición Y
-
-            # Verificar si la oveja está suficientemente lejos de las demás
-            too_close = False
-            for pos in sheep_positions:
-                dist = math.sqrt((x_pos - pos[0])**2 + (y_pos - pos[1])**2)
-                if dist < min_distance:
-                    too_close = True
-                    break
-            
-            # Si no está demasiado cerca de otras ovejas, agrega la posición
-            if not too_close:
-                sheep_positions.append((x_pos, y_pos))
-                break
-        
-        # Crear el nodo para la oveja
-        sheep_spawn = Node(
-            package='ros_gz_sim',
-            executable='create',
-            arguments=[
-                '-name', f'sheep_{i}',
-                '-x', str(x_pos),
-                '-y', str(y_pos),
-                '-z', '27.5',  # Altura de la oveja
-                '-file', sheep_model_path
-            ],
-            output='screen'
-        )
-        sheep_nodes.append(sheep_spawn)
+    sheep_nodes = generate_sheep_nodes()
 
     # Crear el LaunchDescription e incluir las acciones
     ld = LaunchDescription()
@@ -189,12 +147,12 @@ def generate_launch_description():
     ld.add_action(robot_state_publisher)
     ld.add_action(joint_state_publisher_node)
     ld.add_action(spawn)
-    
+
     for node in static_tf_nodes:
         ld.add_action(node)
 
     # Añadir los nodos para las ovejas
     for sheep in sheep_nodes:
         ld.add_action(sheep)
-    
+
     return ld
