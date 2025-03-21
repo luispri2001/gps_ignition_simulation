@@ -1,3 +1,6 @@
 [submodule "leorover_gazebo_sim"]
 	path = leorover_gazebo_sim
 	url = https://github.com/luispri2001/leorover_gazebo_sim.git
+[submodule "unitree-go2-ros2"]
+	path = unitree-go2-ros2
+	url = https://github.com/luispri2001/unitree-go2-ros2.git
