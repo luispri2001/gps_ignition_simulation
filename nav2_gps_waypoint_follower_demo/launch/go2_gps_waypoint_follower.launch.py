@@ -56,7 +56,7 @@ def generate_launch_description():
 
     robot_localization_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(launch_dir, 'dual_ekf_navsat.launch.py'))
+            os.path.join(launch_dir, 'go2_dual_ekf_navsat.launch.py'))
     )
 
     navigation2_cmd = IncludeLaunchDescription(

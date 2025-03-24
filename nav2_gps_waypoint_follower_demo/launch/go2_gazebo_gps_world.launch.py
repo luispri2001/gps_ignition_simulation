@@ -75,12 +75,15 @@ def generate_launch_description():
     declare_gui = DeclareLaunchArgument(
         "gui", default_value="true", description="Use gui"
     )
-    declare_world_init_x = DeclareLaunchArgument("world_init_x", default_value="-137.0")
-    declare_world_init_y = DeclareLaunchArgument("world_init_y", default_value="-130.0")
-    declare_world_init_z = DeclareLaunchArgument("world_init_z", default_value="28.0")
+    declare_world_init_x = DeclareLaunchArgument("world_init_x", default_value="-50.0")
+    declare_world_init_y = DeclareLaunchArgument("world_init_y", default_value="-180.0")
+    declare_world_init_z = DeclareLaunchArgument("world_init_z", default_value="28.1")
     declare_world_init_heading = DeclareLaunchArgument(
-        "world_init_heading", default_value="0.0"
+        "world_init_heading", default_value="3.1416"
     )
+
+
+
 
     
     bringup_ld = IncludeLaunchDescription(
